@@ -1,0 +1,508 @@
+openapi: 3.0.3
+info:
+  title: College Management System - Landing Page API
+  description: REST API for the public Landing Page module of the College Management System.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Health
+  - name: Announcements
+  - name: News
+  - name: Events
+  - name: College
+  - name: Featured
+
+paths:
+  /api/v1/health:
+    get:
+      tags: [Health]
+      summary: Check API health
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: ok
+
+  /api/v1/announcements:
+    get:
+      tags: [Announcements]
+      summary: Get all announcements
+      responses:
+        '200':
+          description: List of announcements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Announcement'
+              example:
+                - id: ANN-001
+                  title: Enrollment for First Semester 2026-2027
+                  content: Enrollment is now open for all students.
+                  date: Sep 25, 2026
+                  status: Published
+    post:
+      tags: [Announcements]
+      summary: Create an announcement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementInput'
+            example:
+              title: New Announcement
+              content: This is a new announcement.
+              date: Oct 08, 2026
+              status: Published
+      responses:
+        '201':
+          description: Announcement created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/announcements/{id}:
+    get:
+      tags: [Announcements]
+      summary: Get one announcement
+      parameters:
+        - $ref: '#/components/parameters/AnnouncementId'
+      responses:
+        '200':
+          description: Announcement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags: [Announcements]
+      summary: Update an announcement
+      parameters:
+        - $ref: '#/components/parameters/AnnouncementId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementInput'
+      responses:
+        '200':
+          description: Announcement updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags: [Announcements]
+      summary: Delete an announcement
+      parameters:
+        - $ref: '#/components/parameters/AnnouncementId'
+      responses:
+        '204':
+          description: Announcement deleted
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/news:
+    get:
+      tags: [News]
+      summary: Get all news
+      responses:
+        '200':
+          description: List of news
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/News'
+    post:
+      tags: [News]
+      summary: Create news
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsInput'
+            example:
+              title: New College News
+              content: A new college news item.
+              date: Oct 08, 2026
+              category: School Event
+      responses:
+        '201':
+          description: News created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/news/{id}:
+    get:
+      tags: [News]
+      summary: Get one news item
+      parameters:
+        - $ref: '#/components/parameters/NewsId'
+      responses:
+        '200':
+          description: News item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags: [News]
+      summary: Update news
+      parameters:
+        - $ref: '#/components/parameters/NewsId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsInput'
+      responses:
+        '200':
+          description: News updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags: [News]
+      summary: Delete news
+      parameters:
+        - $ref: '#/components/parameters/NewsId'
+      responses:
+        '204':
+          description: News deleted
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/events:
+    get:
+      tags: [Events]
+      summary: Get all events
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+    post:
+      tags: [Events]
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+            example:
+              title: Sports Day
+              date: '2026-10-25'
+              time: 8:00 AM
+              location: College Gymnasium
+              description: Annual college sports activity.
+      responses:
+        '201':
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/events/{id}:
+    get:
+      tags: [Events]
+      summary: Get one event
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '200':
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags: [Events]
+      summary: Update an event
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '200':
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags: [Events]
+      summary: Delete an event
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '204':
+          description: Event deleted
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/college:
+    get:
+      tags: [College]
+      summary: Get college information
+      responses:
+        '200':
+          description: College information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/College'
+              example:
+                name: Sample College
+                description: A college committed to quality education.
+                address: Naga City, Camarines Sur
+                email: info@samplecollege.edu
+                phone: '09123456789'
+
+  /api/v1/featured:
+    get:
+      tags: [Featured]
+      summary: Get featured landing page content
+      responses:
+        '200':
+          description: Featured content
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Featured'
+              example:
+                - id: FEATURED-001
+                  title: Welcome to Our College
+                  description: Discover our programs and campus activities.
+                  type: announcement
+
+components:
+  parameters:
+    AnnouncementId:
+      name: id
+      in: path
+      required: true
+      description: Announcement ID
+      schema:
+        type: string
+        example: ANN-001
+    NewsId:
+      name: id
+      in: path
+      required: true
+      description: News ID
+      schema:
+        type: string
+        example: NEWS-001
+    EventId:
+      name: id
+      in: path
+      required: true
+      description: Event ID
+      schema:
+        type: string
+        example: EVENT-001
+
+  responses:
+    ValidationError:
+      description: Bad input
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://example.com/problems/validation-error
+            title: Validation Error
+            status: 400
+            detail: The title field is required.
+    NotFoundError:
+      description: Resource was not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://example.com/problems/not-found
+            title: Resource Not Found
+            status: 404
+            detail: Announcement ANN-999 was not found.
+
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
+
+    ProblemDetails:
+      type: object
+      required: [type, title, status, detail]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+
+    AnnouncementInput:
+      type: object
+      required: [title, content, date, status]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+        status:
+          type: string
+
+    Announcement:
+      allOf:
+        - $ref: '#/components/schemas/AnnouncementInput'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              example: ANN-001
+
+    NewsInput:
+      type: object
+      required: [title, content, date, category]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+        category:
+          type: string
+
+    News:
+      allOf:
+        - $ref: '#/components/schemas/NewsInput'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              example: NEWS-001
+
+    EventInput:
+      type: object
+      required: [title, date, time, location, description]
+      properties:
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/EventInput'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              example: EVENT-001
+
+    College:
+      type: object
+      required: [name, description, address, email, phone]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+
+    Featured:
+      type: object
+      required: [id, title, description, type]
+      properties:
+        id:
+          type: string
+          example: FEATURED-001
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [announcement, news, event]
